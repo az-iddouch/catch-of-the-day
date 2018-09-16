@@ -4,6 +4,8 @@ import Fish from './Fish';
 import Order from './Order';
 import Enventory from './Enventory';
 import sampleFishes from '../sample-fishes';
+// import Rebase from 're-base';
+import base from '../base';
 
 class App extends React.Component {
   constructor() {
@@ -11,11 +13,41 @@ class App extends React.Component {
     this.addFish = this.addFish.bind(this);
     this.loadSamples = this.loadSamples.bind(this);
     this.addToOrder = this.addToOrder.bind(this);
+    this.updateFish = this.updateFish.bind(this);
     // Initial State
     this.state = {
       fishes: {},
       order: {}
     }
+  }
+
+  // life sycle hooks
+  componentWillMount() {
+    // this runs right before <App /> is rendered
+    // Sync our state with firebase
+    this.ref = base.syncState(`${this.props.match.params.storeId}/fishes`,
+    {
+      context: this,
+      state: 'fishes'
+    });
+
+    // Check if there's any Order in LC
+    const localStorageRef = localStorage.getItem(`order-${this.props.match.params.storeId}`);
+    if(localStorageRef) {
+      // Update our App Component Order state
+      this.setState({
+        order: JSON.parse(localStorageRef)
+      });
+    }
+  }
+
+  // life sycle hooks
+  componentWillUnmount() {
+    base.removeBinding(this.ref);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    localStorage.setItem(`order-${this.props.match.params.storeId}`, JSON.stringify(nextState.order));
   }
 
   loadSamples() {
@@ -35,6 +67,12 @@ class App extends React.Component {
     this.setState({ fishes });
   }
 
+  updateFish(key, updatedFish) {
+    const fishes = {...this.state.fishes};
+    fishes[key] = updatedFish;
+    this.setState({ fishes });
+  }
+
   addToOrder(key) {
     // Take a copy of our state
     const order = {...this.state.order};
@@ -50,12 +88,23 @@ class App extends React.Component {
         <div className="menu">
           <Header tagline="Fresh Fish" />
           <ul className="list-of-fishes">
-            { Object.keys(this.state.fishes)
-              .map(key => <Fish key={key} index={key} details={this.state.fishes[key]} addToOrder={this.addToOrder} />) }
+            { 
+              Object.keys(this.state.fishes)
+                .map(key => <Fish 
+                  key={key} 
+                  index={key} 
+                  details={this.state.fishes[key]} 
+                  addToOrder={this.addToOrder} />) 
+            }
           </ul> 
         </div>
-        <Order/>
-        <Enventory addFish={this.addFish} loadSamples={this.loadSamples} />
+        <Order fishes={this.state.fishes} order={this.state.order} params={this.props.match.params} />
+        <Enventory 
+          addFish={this.addFish} 
+          loadSamples={this.loadSamples} 
+          fishes={this.state.fishes} 
+          updateFish={this.updateFish} 
+        />
       </div>
     )
   }
