@@ -8,14 +8,16 @@ class StorePicker extends React.Component {
   //   super();
   //   this.goToStore = this.goToStore.bind(this);
   // }
+  storeInput = React.createRef();
 
   goToStore(event) {
     event.preventDefault();
     // Grab the text from the box
-    console.log(this.storeInput.value);
+    // the first .value is a react thing and the second is a js thing
+    const storeName = this.storeInput.value.value;
     // Transition to '/' to '/store/:something'
     // The router will add a history object to your component in the props hash. So in your component
-    this.props.history.push(`/store/${this.storeInput.value}`)
+    this.props.history.push(`/store/${storeName}`) 
   }
 
   render() {
@@ -23,7 +25,7 @@ class StorePicker extends React.Component {
       <form className="store-selector" onSubmit={(e) => this.goToStore(e)}>
         {/* this is a react comment */}
         <h2>Please Enter a store</h2>
-        <input type="text" required placeholder="Store name" defaultValue={getFunName()} ref={(input) => {this.storeInput = input}} ></input>
+        <input type="text" required placeholder="Store name" defaultValue={getFunName()} ref={this.storeInput} ></input>
         <button type="submit">visite store </button>
       </form>
     )

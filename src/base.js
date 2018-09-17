@@ -16,8 +16,8 @@ const app = firebase.initializeApp({
   projectId: "catch-of-the-day-jax-az"
 });
 
-var db = firebase.database(app);
-var base = Rebase.createClass(db);
+const db = firebase.database(app);
+const base = Rebase.createClass(db);
 
 export default base;
 
