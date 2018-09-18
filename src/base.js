@@ -9,14 +9,16 @@ import firebase from 'firebase';
 // });
 
 
-const app = firebase.initializeApp({
+const firebaseApp = firebase.initializeApp({
   apiKey: "AIzaSyCHWYg7etPDIuZcQn3w4BWoU-MeGhFp5Ro",
   authDomain: "catch-of-the-day-jax-az.firebaseapp.com",
   databaseURL: "https://catch-of-the-day-jax-az.firebaseio.com",
   projectId: "catch-of-the-day-jax-az"
 });
 
-const db = firebase.database(app);
+export { firebaseApp }
+
+const db = firebase.database(firebaseApp);
 const base = Rebase.createClass(db);
 
 export default base;
