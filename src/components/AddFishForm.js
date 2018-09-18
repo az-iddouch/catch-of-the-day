@@ -1,31 +1,43 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class AddFishForm extends React.Component {
+  // fishForm = React.createRef();
+  name = React.createRef();
+  price = React.createRef();
+  status = React.createRef();
+  desc = React.createRef();
+  image = React.createRef();
+
+  static propTypes = {
+    addFish: PropTypes.func
+  }
+
   createFish(e) {
     e.preventDefault();
     const fish = {
-      name: this.name.value,
-      price: this.price.value,
-      status: this.status.value,
-      desc: this.desc.value,
-      image: this.image.value
+      name: this.name.value.value,
+      price: parseFloat(this.price.value.value),
+      status: this.status.value.value,
+      desc: this.desc.value.value,
+      image: this.image.value.value
     }
     console.log(fish)
     this.props.addFish(fish);
-    this.fishForm.reset();
+    e.currentTarget.reset();
   }
 
   render() {
     return (
-      <form ref={(input) => this.fishForm = input } className="fish-edit" onSubmit={e => this.createFish(e)}>
-        <input ref={(input) => this.name = input} type="text" placeholder="Fish Name" />
-        <input ref={(input) => this.price = input} type="text" placeholder="Fish Price" />
-        <select ref={(input) => this.status = input}>
+      <form className="fish-edit" onSubmit={e => this.createFish(e)}>
+        <input ref={this.name} type="text" placeholder="Fish Name" />
+        <input ref={this.price} type="text" placeholder="Fish Price" />
+        <select ref={this.status}>
           <option value="available">Fresh !</option>
           <option value="unavailable">Sold Out !</option>
         </select>
-        <textarea ref={(input) => this.desc = input} placeholder="Fish Desc"></textarea>
-        <input ref={(input) => this.image = input} type="text" placeholder="Fish Image" />
+        <textarea ref={this.desc} placeholder="Fish Desc"></textarea>
+        <input ref={this.image} type="text" placeholder="Fish Image" />
         <button type="submit">+ Add Item</button>
       </form>
     )
